@@ -100,6 +100,22 @@ namespace TestSite
                 case "ConsoleWriteStartServer":
                     Console.WriteLine("TEST MESSAGE");
                     return StartServer();
+                case "ThrowInStartup":
+                    {
+                        var host = new WebHostBuilder()
+                                       .ConfigureLogging((_, factory) =>
+                                       {
+                                           factory.AddConsole();
+                                           factory.AddFilter("Console", level => level >= LogLevel.Information);
+                                       })
+                                       .UseIIS()
+                                       .UseStartup<ThrowingStartup>()
+                                       .Build();
+
+                        host.Run();
+                    }
+
+                    return 0;
                 default:
                     return StartServer();
 
